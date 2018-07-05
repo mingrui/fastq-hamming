@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e97147f-908a-4a7e-90bd-fed5f98cbb6e" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/mysplitter.py" beforeDir="false" afterPath="$PROJECT_DIR$/mysplitter.py" afterDir="false" />
-    </list>
+    <list default="true" id="8e97147f-908a-4a7e-90bd-fed5f98cbb6e" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,8 +14,8 @@
       <file leaf-file-name="mysplitter.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mysplitter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="80" column="30" selection-start-line="80" selection-start-column="30" selection-end-line="80" selection-end-column="30" />
+            <state relative-caret-position="2002">
+              <caret line="91" column="35" lean-forward="true" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
               <folding>
                 <element signature="e#109#118#0" expanded="true" />
               </folding>
@@ -28,7 +26,7 @@
       <file leaf-file-name="performance.log" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/performance.log">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="933">
+            <state relative-caret-position="-651">
               <caret line="148" column="14" selection-start-line="148" selection-start-column="14" selection-end-line="148" selection-end-column="14" />
             </state>
           </provider>
@@ -190,15 +188,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/performance.log">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="933">
+        <state relative-caret-position="-651">
           <caret line="148" column="14" selection-start-line="148" selection-start-column="14" selection-end-line="148" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mysplitter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="80" column="30" selection-start-line="80" selection-start-column="30" selection-end-line="80" selection-end-column="30" />
+        <state relative-caret-position="2002">
+          <caret line="91" column="35" lean-forward="true" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
           <folding>
             <element signature="e#109#118#0" expanded="true" />
           </folding>
