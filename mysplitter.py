@@ -19,20 +19,27 @@ import multiprocessing
 # cython
 from hamming_cython_solution import hamming_loop
 
+# input
+infq1 = sys.argv[1]
+infq2 = sys.argv[2]
+prefix = sys.argv[3]
+
 # debugging constants
 WHOLE_LOOP_TIME = time.time()
 ITER_TO_LIST_TIME = time.time()
 
-process = psutil.Process(os.getpid())
-print('process memory resident set size: {}'.format(process.memory_info().rss))
+# process = psutil.Process(os.getpid())
+# print('process memory resident set size: {}'.format(process.memory_info().rss))
 
 # this file dict will remember opened files and keep the files open
 FILE_DICT = {}
 
+# folder setup
 if os.path.exists('output'):
     shutil.rmtree('output')
 os.mkdir('output')
 
+# bar code
 bcds = {}
 with open("input/tang_barcode.txt",'r') as fi:
     fi.readline()
@@ -40,12 +47,7 @@ with open("input/tang_barcode.txt",'r') as fi:
         l = l.strip().split('\t')
         bcds[l[1]] = l[0]
 
-infq1 = sys.argv[1]
-infq2 = sys.argv[2]
-
-prefix = sys.argv[3]
-
-
+# convert iter to list
 fh1 = gzip.open(infq1,'r')
 fh2 = gzip.open(infq2,'r')
 fq1iter = FastqGeneralIterator(fh1)
@@ -68,9 +70,10 @@ fh1.close()
 fh2.close()
 
 ITER_TO_LIST_TIME = time.time() - ITER_TO_LIST_TIME
+print('ITER_TO_LIST_TIME: {}'.format(ITER_TO_LIST_TIME))
 
 n_cpus = psutil.cpu_count()
-print 'number of cpus: {}'.format(n_cpus)
+print('number of cpus: {}'.format(n_cpus))
 
 def split(sq1list,sq2list, proc_num):
     print "process initializing", multiprocessing.current_process()
@@ -132,9 +135,7 @@ def split(sq1list,sq2list, proc_num):
             # print('memory info: {}'.format(process.memory_info()[0]))
             unassigned = 0
 
-
-
-
+# split list to 4 section, run each section on single cpu
 
 fq1list = return_dict[1]
 fq2list = return_dict[2]
@@ -150,9 +151,6 @@ fq2list_a = fq2list[:len2*1/4]
 fq2list_b = fq2list[len2*1/4:len2*2/4]
 fq2list_c = fq2list[len2*2/4:len2*3/4]
 fq2list_d = fq2list[len2*3/4:]
-
-
-
 
 process1 = multiprocessing.Process(target=split,
                                    args=(fq1list_a, fq2list_a, 1))
@@ -172,11 +170,11 @@ process3.join()
 process4.join()
 
 WHOLE_LOOP_TIME = time.time() - WHOLE_LOOP_TIME
-print('WHOLE_LOOP_TIME, ITER_TO_LIST_TIME: {}, {}'.format(WHOLE_LOOP_TIME, ITER_TO_LIST_TIME))
+print('WHOLE_LOOP_TIME: {}'.format(WHOLE_LOOP_TIME))
 
 # closing files
 for k,v in FILE_DICT.iteritems():
     v.close()
 
-
+# merge files
 

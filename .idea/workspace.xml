@@ -16,10 +16,11 @@
       <file leaf-file-name="mysplitter.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mysplitter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="907">
-              <caret line="174" column="92" selection-start-line="174" selection-start-column="92" selection-end-line="174" selection-end-column="92" />
+            <state relative-caret-position="85">
+              <caret line="72" column="54" selection-start-line="72" selection-start-column="54" selection-end-line="72" selection-end-column="54" />
               <folding>
                 <element signature="e#109#118#0" expanded="true" />
+                <element signature="e#1639#3278#0" />
               </folding>
             </state>
           </provider>
@@ -166,6 +167,7 @@
           <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
           <folding>
             <element signature="e#109#118#0" expanded="true" />
+            <element signature="e#1639#3278#0" />
           </folding>
         </state>
       </provider>
@@ -183,6 +185,7 @@
           <caret line="116" column="23" selection-start-line="116" selection-end-line="117" />
           <folding>
             <element signature="e#109#118#0" expanded="true" />
+            <element signature="e#1639#3278#0" />
           </folding>
         </state>
       </provider>
@@ -214,10 +217,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mysplitter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="907">
-          <caret line="174" column="92" selection-start-line="174" selection-start-column="92" selection-end-line="174" selection-end-column="92" />
+        <state relative-caret-position="85">
+          <caret line="72" column="54" selection-start-line="72" selection-start-column="54" selection-end-line="72" selection-end-column="54" />
           <folding>
             <element signature="e#109#118#0" expanded="true" />
+            <element signature="e#1639#3278#0" />
           </folding>
         </state>
       </provider>
