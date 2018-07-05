@@ -21,6 +21,7 @@ from hamming_cython_solution import hamming_loop
 
 # debugging constants
 WHOLE_LOOP_TIME = time.time()
+ITER_TO_LIST_TIME = time.time()
 
 process = psutil.Process(os.getpid())
 print('process memory resident set size: {}'.format(process.memory_info().rss))
@@ -66,10 +67,19 @@ process2.join()
 fh1.close()
 fh2.close()
 
+ITER_TO_LIST_TIME = time.time() - ITER_TO_LIST_TIME
 
+n_cpus = psutil.cpu_count()
+print 'number of cpus: {}'.format(n_cpus)
 
 def split(sq1list,sq2list, proc_num):
     print "process initializing", multiprocessing.current_process()
+
+    # used this to test cpu usage, 4 cpus are at 100%
+    #x = 0
+    #while x < 1e100:
+    #    x +=1
+
     i = 0
     unassigned = 0
     FILE_IO_TIME = 0
@@ -162,7 +172,7 @@ process3.join()
 process4.join()
 
 WHOLE_LOOP_TIME = time.time() - WHOLE_LOOP_TIME
-print('WHOLE_LOOP_TIME: {}'.format(WHOLE_LOOP_TIME))
+print('WHOLE_LOOP_TIME, ITER_TO_LIST_TIME: {}, {}'.format(WHOLE_LOOP_TIME, ITER_TO_LIST_TIME))
 
 # closing files
 for k,v in FILE_DICT.iteritems():
