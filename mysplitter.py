@@ -78,7 +78,7 @@ for (title1, seq1, qual1),(title2, seq2, qual2) in itertools.izip(fq1iter, fq2it
         ci = bcds[bcd]
     else:
         for bar in bcds:
-            di = distance.hamming(bcd, bar)
+            di = hamming_loop(bcd, bar)
             if di < 3:
                 bcd = bar
                 ci = bcds[bcd]
