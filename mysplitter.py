@@ -130,6 +130,8 @@ def split(sq1list, sq2list, proc_num):
 
 # split list to 4 section, run each section on single cpu
 
+pool = multiprocessing.Pool()
+
 fq1list = return_dict[1]
 fq2list = return_dict[2]
 len1 = len(fq1list)
@@ -142,10 +144,11 @@ for i in range(n):
     process_i = multiprocessing.Process(target=split,
                                         args=(fq1list_i, fq2list_i, i))
     jobs.append(process_i)
-for j in jobs:
-    j.start()
-for j in jobs:
-    j.join()
+# for j in jobs:
+#     j.start()
+# for j in jobs:
+#     j.join()
+pool.map(jobs)
 
 ALL_TIME = time.time() - ALL_TIME
 LOOP_TIME = ALL_TIME - TO_LIST_TIME
