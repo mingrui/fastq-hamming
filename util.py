@@ -4,12 +4,13 @@ import multiprocessing
 import time
 from hamming_cython_solution import hamming_loop
 import os
+import itertools
+
 
 
 class Batch:
-    def __init__(self, iterable, condition=(lambda x:False), limit=None):
+    def __init__(self, iterable, limit=None):
         self.iterator = iter(iterable)
-        self.condition = condition
         self.limit = limit
         try:
             self.current = next(self.iterator)
@@ -23,7 +24,7 @@ class Batch:
         # start enumerate at 1 because we already yielded the last saved item
         for num, item in enumerate(self.iterator, 1):
             self.current = item
-            if num == self.limit or self.condition(item):
+            if num == self.limit:
                 break
             yield item
         else:

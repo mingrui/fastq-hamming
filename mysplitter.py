@@ -10,15 +10,10 @@ import sys
 import gzip
 import itertools
 import time
-from Bio import SeqIO
 from Bio.SeqIO.QualityIO import FastqGeneralIterator
 import shutil
 import psutil
-import distance
 import multiprocessing
-from multiprocessing import Pool
-import numpy as np
-from itertools import islice
 
 # cython
 from util import Batch, split
@@ -27,6 +22,7 @@ from util import Batch, split
 infq1 = sys.argv[1]
 infq2 = sys.argv[2]
 prefix = sys.argv[3]
+process_num = sys.argv[4]
 
 ALL_TIME = time.time()
 
@@ -52,34 +48,24 @@ fh2 = gzip.open(infq2,'r')
 fq1iter = FastqGeneralIterator(fh1)
 fq2iter = FastqGeneralIterator(fh2)
 
-batch_1 = Batch(fq1iter, limit=1e6)
-batch_2 = Batch(fq2iter, limit=1e6)
-
-def iter_to_list(fq_iter, return_dict, return_key):
-    return_dict[return_key] = np.array(list(fq_iter))
+batch_1= Batch(fq1iter, 1e7)
+batch_2= Batch(fq2iter, 1e7)
 
 for b1, b2 in itertools.izip(batch_1, batch_2):
     loop_time = time.time()
 
-    print('Start split...')
+    print('\nStart split...')
     n_cpus = psutil.cpu_count()
     print('number of cpus: {}'.format(n_cpus))
-    n = 8
+    n = int(process_num)
     print('Numer of processes: {}'.format(n))
 
-    # manager = multiprocessing.Manager()
-    # return_dict = manager.dict()
-    # process1 = multiprocessing.Process(target=iter_to_list, args=(b1, return_dict, 1))
-    # process2 = multiprocessing.Process(target=iter_to_list, args=(b2, return_dict, 2))
-    # process1.start()
-    # process2.start()
-    # process1.join()
-    # process2.join()
-    # fq1list = return_dict[1]
-    # fq2list = return_dict[2]
-
+    to_list_t = time.time()
     fq1list = list(b1)
     fq2list = list(b2)
+    to_list_t = time.time() - to_list_t
+    print('to_list_time: {}'.format(to_list_t))
+
     len1 = len(fq1list)
     len2 = len(fq2list)
     jobs = []
@@ -94,7 +80,7 @@ for b1, b2 in itertools.izip(batch_1, batch_2):
     for j in jobs:
         j.join()
 
-    print('loop time: {}'.format(time.time()-loop_time))
+    print('loop time: {}'.format(time.time() - loop_time))
 
 fh1.close()
 fh2.close()
