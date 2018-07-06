@@ -15,6 +15,7 @@ import shutil
 import psutil
 import distance
 import multiprocessing
+from multiprocessing import Pool
 
 # cython
 from hamming_cython_solution import hamming_loop
@@ -72,6 +73,9 @@ print('Start split...')
 n_cpus = psutil.cpu_count()
 print('number of cpus: {}'.format(n_cpus))
 
+def split_pool_wrapper(input_list):
+    split(input_list[0], input_list[1], input_list[2])
+
 def split(sq1list, sq2list, proc_num):
     print "process initializing", multiprocessing.current_process()
     file_dict = {}
@@ -128,27 +132,33 @@ def split(sq1list, sq2list, proc_num):
         outfile.write("\n".join(v))
         outfile.close()
 
-# split list to 4 section, run each section on single cpu
-
-pool = multiprocessing.Pool()
-
+# split jobs
 fq1list = return_dict[1]
 fq2list = return_dict[2]
 len1 = len(fq1list)
 len2 = len(fq2list)
 n = 8
 jobs = []
+print('Numer of processes: {}'.format(n))
 for i in range(n):
     fq1list_i = fq1list[len1*(i)/n:len1*(i+1)/n]
     fq2list_i = fq2list[len2*(i)/n:len2*(i+1)/n]
     process_i = multiprocessing.Process(target=split,
                                         args=(fq1list_i, fq2list_i, i))
     jobs.append(process_i)
-# for j in jobs:
-#     j.start()
-# for j in jobs:
-#     j.join()
-pool.map(jobs)
+for j in jobs:
+    j.start()
+for j in jobs:
+    j.join()
+
+# pool is slower
+# lists = []
+# for i in range(n):
+#     fq1list_i = fq1list[len1*(i)/n:len1*(i+1)/n]
+#     fq2list_i = fq2list[len2*(i)/n:len2*(i+1)/n]
+#     lists.append([fq1list_i, fq2list_i, i])
+# pool = Pool(n)
+# pool.map(split_pool_wrapper, lists)
 
 ALL_TIME = time.time() - ALL_TIME
 LOOP_TIME = ALL_TIME - TO_LIST_TIME
