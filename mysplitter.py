@@ -106,7 +106,7 @@ def split(sq1list, sq2list, proc_num):
             io_start_time = time.time()
 
             rec1 = "@%s\n%s\n+\n%s\n" % (title1, seq1, qual1)
-            fo = str(proc_num) + '_' + ci + '_' + bcd + '.fastq'
+            fo = prefix + '_' + ci + '_' + bcd + '.fastq'
             fo = os.path.join('output', fo)
 
             if fo in file_dict:
@@ -134,7 +134,7 @@ fq1list = return_dict[1]
 fq2list = return_dict[2]
 len1 = len(fq1list)
 len2 = len(fq2list)
-n = 4
+n = 8
 jobs = []
 for i in range(n):
     fq1list_i = fq1list[len1*(i)/n:len1*(i+1)/n]
