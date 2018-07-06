@@ -25,14 +25,7 @@ infq2 = sys.argv[2]
 prefix = sys.argv[3]
 
 # debugging constants
-WHOLE_LOOP_TIME = time.time()
-ITER_TO_LIST_TIME = time.time()
-
-# process = psutil.Process(os.getpid())
-# print('process memory resident set size: {}'.format(process.memory_info().rss))
-
-# this file dict will remember opened files and keep the files open
-FILE_DICT = {}
+ALL_TIME = time.time()
 
 # folder setup
 if os.path.exists('output'):
@@ -40,6 +33,8 @@ if os.path.exists('output'):
 os.mkdir('output')
 
 # bar code
+print('')
+print('Read Barcode...')
 bcds = {}
 with open("input/tang_barcode.txt",'r') as fi:
     fi.readline()
@@ -47,6 +42,8 @@ with open("input/tang_barcode.txt",'r') as fi:
         l = l.strip().split('\t')
         bcds[l[1]] = l[0]
 
+print('Convert iterator to list...')
+TO_LIST_TIME = time.time()
 # convert iter to list
 fh1 = gzip.open(infq1,'r')
 fh2 = gzip.open(infq2,'r')
@@ -69,20 +66,15 @@ process2.join()
 fh1.close()
 fh2.close()
 
-ITER_TO_LIST_TIME = time.time() - ITER_TO_LIST_TIME
-print('ITER_TO_LIST_TIME: {}'.format(ITER_TO_LIST_TIME))
+TO_LIST_TIME = time.time() - TO_LIST_TIME
 
+print('Start split...')
 n_cpus = psutil.cpu_count()
 print('number of cpus: {}'.format(n_cpus))
 
-def split(sq1list,sq2list, proc_num):
+def split(sq1list, sq2list, proc_num):
     print "process initializing", multiprocessing.current_process()
-
-    # used this to test cpu usage, 4 cpus are at 100%
-    #x = 0
-    #while x < 1e100:
-    #    x +=1
-
+    file_dict = {}
     i = 0
     unassigned = 0
     FILE_IO_TIME = 0
@@ -117,13 +109,10 @@ def split(sq1list,sq2list, proc_num):
             fo = str(proc_num) + '_' + ci + '_' + bcd + '.fastq'
             fo = os.path.join('output', fo)
 
-            if fo in FILE_DICT:
-                outfile = FILE_DICT[fo]
-                outfile.write(rec1)
+            if fo in file_dict:
+                file_dict[fo].append(rec1)
             else:
-                outfile = open(fo, "w+")
-                FILE_DICT[fo] = outfile
-                outfile.write(rec1)
+                file_dict[fo] = [rec1]
 
             FILE_IO_TIME += time.time() - io_start_time
 
@@ -132,49 +121,36 @@ def split(sq1list,sq2list, proc_num):
         if i%10000==0:
             elapsed_time = time.time() - start_time
             print str(i) + " has been processed, assigned rate: " + str(1-unassigned/100000.0) + ", consumed time: {}".format(elapsed_time)
-            # print('memory info: {}'.format(process.memory_info()[0]))
             unassigned = 0
+
+    for k,v in file_dict.iteritems():
+        outfile = open(k, 'w+')
+        outfile.write("\n".join(v))
+        outfile.close()
 
 # split list to 4 section, run each section on single cpu
 
 fq1list = return_dict[1]
 fq2list = return_dict[2]
-
 len1 = len(fq1list)
-fq1list_a = fq1list[:len1*1/4]
-fq1list_b = fq1list[len1*1/4:len1*2/4]
-fq1list_c = fq1list[len1*2/4:len1*3/4]
-fq1list_d = fq1list[len1*3/4:]
-
 len2 = len(fq2list)
-fq2list_a = fq2list[:len2*1/4]
-fq2list_b = fq2list[len2*1/4:len2*2/4]
-fq2list_c = fq2list[len2*2/4:len2*3/4]
-fq2list_d = fq2list[len2*3/4:]
+n = 4
+jobs = []
+for i in range(n):
+    fq1list_i = fq1list[len1*(i)/n:len1*(i+1)/n]
+    fq2list_i = fq2list[len2*(i)/n:len2*(i+1)/n]
+    process_i = multiprocessing.Process(target=split,
+                                        args=(fq1list_i, fq2list_i, i))
+    jobs.append(process_i)
+for j in jobs:
+    j.start()
+for j in jobs:
+    j.join()
 
-process1 = multiprocessing.Process(target=split,
-                                   args=(fq1list_a, fq2list_a, 1))
-process2 = multiprocessing.Process(target=split,
-                                   args=(fq1list_b, fq2list_b, 2))
-process3 = multiprocessing.Process(target=split,
-                                   args=(fq1list_c, fq2list_c, 3))
-process4 = multiprocessing.Process(target=split,
-                                   args=(fq1list_d, fq2list_d, 4))
-process1.start()
-process2.start()
-process3.start()
-process4.start()
-process1.join()
-process2.join()
-process3.join()
-process4.join()
+ALL_TIME = time.time() - ALL_TIME
+LOOP_TIME = ALL_TIME - TO_LIST_TIME
+print('ALL_TIME, TO_LIST_TIME, LOOP_TIME: {}, {}, {}'.format(ALL_TIME, TO_LIST_TIME, LOOP_TIME))
 
-WHOLE_LOOP_TIME = time.time() - WHOLE_LOOP_TIME
-print('WHOLE_LOOP_TIME: {}'.format(WHOLE_LOOP_TIME))
 
-# closing files
-for k,v in FILE_DICT.iteritems():
-    v.close()
 
-# merge files
 
